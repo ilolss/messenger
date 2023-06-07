@@ -8,8 +8,10 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Network REQUIRED)
@@ -18,15 +20,19 @@ set(PROJECT_SOURCES
         src/main.cpp
         src/mainwindow.cpp
         include/mainwindow.h
-        mainwindow.ui
+        ui/mainwindow.ui
         src/listofchatswindow.cpp
         include/listofchatswindow.h
-        listofchatswindow.ui
+        ui/listofchatswindow.ui
         src/chatwindow.cpp
         include/chatwindow.h
-        chatwindow.ui
+        ui/chatwindow.ui
         include/client.h
         src/client.cpp
+        include/globalclient.h
+        src/globalclient.cpp
+        include/message.h
+        src/message.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -59,6 +65,14 @@ set_target_properties(qt_client PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
+
+#add_compile_options(-fsanitize=address)
+#add_link_options(-fsanitize=address)
+
+#add_compile_options(-Wall)
+#add_link_options(-Wall)
+
+#add_definitions(-w)
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(qt_client)

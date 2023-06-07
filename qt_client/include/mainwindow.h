@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "listofchatswindow.h"
+#include "globalclient.h"
 #include "client.h"
 
 QT_BEGIN_NAMESPACE
@@ -20,6 +21,7 @@ public:
 private slots:
     void on_signUpButton_clicked();
     void on_logInButton_clicked();
+    void slotOpenListOfChatsWindow();
 
 signals:
     void signalsLogIn(QString username, QString password);

@@ -1,9 +1,5 @@
-//
-// Created by Filipp Po on 30.05.2023.
-//
-
-#ifndef QT_SERVER_MESSAGE_H
-#define QT_SERVER_MESSAGE_H
+#ifndef MESSAGE_H
+#define MESSAGE_H
 
 #include <QString>
 
@@ -14,4 +10,4 @@ struct Message{
     Message(QString from_username = "", QString content = "");
 };
 
-#endif //QT_SERVER_MESSAGE_H
+#endif // MESSAGE_H
