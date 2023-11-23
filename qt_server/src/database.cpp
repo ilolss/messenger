@@ -2,19 +2,19 @@
 // Created by Filipp Po on 10.05.2023.
 //
 #include "../include/database.h"
+#include <cstdlib>
 #include <QSqlQuery>
 #include <QSqlDatabase>
 #include <QDebug>
 #include <QSqlError>
 
 Database::Database() {
-    qDebug() << "db constructor\n";
     QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL", "messenger_db");
-    db.setHostName("ep-raspy-violet-238986.us-east-2.aws.neon.tech");
-    db.setPort(5432);
-    db.setDatabaseName("messenger");
-    db.setUserName("root");
-    db.setPassword("uUdA8Vio4Cnj");
+    db.setHostName(std::getenv("DATABASE_HOST"));
+    db.setPort(std::getenv("DATABASE_PORT"));
+    db.setDatabaseName(std::getenv("DATABASE_NAME"));
+    db.setUserName(std::getenv("DATABASE_USER"));
+    db.setPassword(std::getenv("DATABASE_PASSWORD"));
     bool is_open_connection = db.open();
     if (is_open_connection) {
         qDebug() << "[INFO] Database connection is open";
@@ -90,12 +90,11 @@ void Database::addMessage(qint32 from_user_id, qint32 to_user_id, QString conten
 
 QVector<Message> Database::getChat(qint32 first_user_id, qint32 second_user_id) {
     QSqlQuery query(QSqlDatabase::database("messenger_db"));
-//    query.prepare("SELECT from_user_id, content FROM messages "
-//                  "WHERE (from_user_id = :first_user_id AND to_user_id = :second_user_id) "
-//                  "OR (from_user_id = :second_user_id AND to_user_id = :first_user_id)"
-//                  );
-//    query.prepare("SELECT *");
-    query.prepare("SELECT users.username, messages.content FROM messages JOIN users ON messages.from_user_id = users.id AND ((messages.from_user_id = :first_user_id AND messages.to_user_id = :second_user_id) OR (messages.from_user_id = :second_user_id AND messages.to_user_id = :first_user_id))");
+   query.prepare("SELECT from_user_id, content FROM messages "
+                 "JOIN users ON messages.from_user_id = users.id "
+                 "AND ((messages.from_user_id = :first_user_id AND messages.to_user_id = :second_user_id) "
+                 "OR (messages.from_user_id = :second_user_id AND messages.to_user_id = :first_user_id))"
+                 );
     query.bindValue(":first_user_id", first_user_id);
     query.bindValue(":second_user_id", second_user_id);
     bool is_insert = query.exec();
@@ -112,20 +111,3 @@ QVector<Message> Database::getChat(qint32 first_user_id, qint32 second_user_id) 
     }
     return messages;
 }
-
-//QString Database::getUsername(qint32 user_id) {
-//    QSqlQuery query(QSqlDatabase::database("messenger_db"));
-//    query.prepare("SELECT username FROM users WHERE id = :user_id");
-//    query.bindValue(":user_id", user_id);
-//    bool is_ok = query.exec();
-//    if (!is_ok) {
-//        qWarning() << "[WARNING] " << query.lastError().text();
-//        return "";
-//    }
-//    if (!query.size()) {
-//        return "";
-//    }
-//    query.first();
-//    return query.value("username").toString();
-//}
-
